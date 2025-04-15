@@ -7,4 +7,8 @@ def generate_nickname() -> str:
     adjectives = ["clever", "jolly", "brave", "sly", "gentle"]
     animals = ["panda", "fox", "raccoon", "koala", "lion"]
     number = random.randint(0, 999)
-    return f"{random.choice(adjectives)}_{random.choice(animals)}_{number}"
+   
+    #  nickname starts with a letter
+    adjective = random.choice(adjectives)
+    animal = random.choice(animals)
+    return f"{adjective}_{animal}_{number}"
