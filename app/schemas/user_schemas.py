@@ -33,6 +33,11 @@ def validate_nickname(value: str) -> str:
             "Nickname must start with a letter, be 3-30 characters long, and contain only alphanumeric characters, underscores, or hyphens."
         )
     return value
+def validate_password(password: Optional[str]) -> Optional[str]:
+    password_regex = r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*.])[A-Za-z\d!@#$%^&*.]{8,}$'
+    if not re.match(password_regex, password):
+        raise ValueError('Invalid password: must be at least 8 characters long, contain upper and lower case letters, and include at least 1 number and special characters.')
+    return password
 
 class UserBase(BaseModel):
     email: EmailStr = Field(..., example="john.doe@example.com")
