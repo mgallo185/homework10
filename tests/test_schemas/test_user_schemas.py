@@ -45,8 +45,13 @@ def test_user_base_nickname_valid(nickname, user_base_data):
 @pytest.mark.parametrize("nickname", ["test user", "test?user", "", "us"])
 def test_user_base_nickname_invalid(nickname, user_base_data):
     user_base_data["nickname"] = nickname
-    with pytest.raises(ValidationError):
-        UserBase(**user_base_data)
+    with pytest.raises(ValidationError) as exc_info:
+        UserBase(email="test@example.com", nickname=nickname)
+    error_message = str(exc_info.value)
+    assert (
+        "Nickname must start with a letter" in error_message
+        or "String should have at least 3 characters" in error_message
+    )
 
 # Parametrized tests for URL validation
 @pytest.mark.parametrize("url", ["http://valid.com/profile.jpg", "https://valid.com/profile.png", None])
@@ -68,6 +73,7 @@ def test_user_base_invalid_email(user_base_data_invalid):
     
     assert "value is not a valid email address" in str(exc_info.value)
     assert "john.doe.example.com" in str(exc_info.value)
+# 
 @pytest.fixture
 def user_base_data():
     return {
@@ -106,4 +112,68 @@ def login_request_data():
     return {
         "email": "test_user@example.com",
         "password": "securepassword",
+    }  
+    
+# Test valid nicknames for UserBase
+@pytest.mark.parametrize("nickname", ["validName", "valid_name123", "valid-Name", "JohnDoe", "Alpha123"])
+def test_user_base_nickname_valid(nickname):
+    user = UserBase(email="test@example.com", nickname=nickname)
+    assert user.nickname == nickname
+
+# Test valid nicknames for UserCreate
+# Test invalid nicknames for UserCreate
+@pytest.mark.parametrize("nickname", ["!invalidname", "invalid name", "ab", "toolongnickname12345678901234567890"])
+def test_user_create_nickname_invalid(nickname):
+    user_data = {
+        "email": "validuser@example.com",
+        "password": "Secure1234!",
+        "nickname": nickname,
     }
+
+    # Ensure invalid data raises ValidationError
+    with pytest.raises(ValidationError) as exc_info:
+        UserCreate(**user_data)  # Updated to use UserCreate schema
+
+    # Check for specific fields causing the error
+    error_message = str(exc_info.value)
+    assert "nickname" in error_message
+
+# Test invalid nicknames for UserCreate
+@pytest.mark.parametrize("nickname", ["!invalidname", "invalid name", "ab", "toolongnickname12345678901234567890"])
+def test_user_create_nickname_invalid(nickname):
+    with pytest.raises(ValidationError) as exc_info:
+        UserCreate(email="validuser@example.com", password="Secure1234!", nickname=nickname)
+    assert "Nickname must start with a letter" in str(exc_info.value)
+# Test valid nicknames for UserUpdate
+@pytest.mark.parametrize("nickname", ["JohnDoe123", "nickname_1", "John-Doe", None])
+def test_user_update_nickname_valid(nickname):
+    if nickname is not None:
+        user_update = UserUpdate(nickname=nickname)
+        assert user_update.nickname == nickname
+    else:
+        # If None, we shouldn't trigger validation
+        with pytest.raises(ValidationError):
+            UserUpdate(nickname=nickname)
+
+# Test invalid nicknames for UserUpdate
+@pytest.mark.parametrize("nickname", ["", "12invalid", "@badname", "toolongnickname12345678901234567890"])
+def test_user_update_nickname_invalid(nickname):
+    with pytest.raises(ValidationError) as exc_info:
+        UserUpdate(nickname=nickname)
+    error_message = str(exc_info.value)
+    assert (
+        "Nickname must start with a letter" in error_message
+        or "At least one field must be provided for update" in error_message
+    )    
+# tests Valid email services
+@pytest.mark.parametrize("email", [
+    "john.doe@example.com",  # Standard format
+    "user+alias@sub.domain.org",  # With alias and subdomain
+    "user_name123@domain.co",  # With underscore and numbers
+    "123user@domain.com",  # Starting with numbers
+    "user.name@domain.travel",  # Non-standard TLD
+])
+def test_user_base_valid_email(email,user_base_data):
+    user_base_data["email"] = email
+    user = UserBase(**user_base_data)
+    assert user.email == email      

@@ -21,6 +21,18 @@ def validate_url(url: Optional[str]) -> Optional[str]:
     if not re.match(url_regex, url):
         raise ValueError('Invalid URL format')
     return url
+def validate_nickname(value: str) -> str:
+    """
+    Validate the nickname according to the rules:
+    - Must start with a letter.
+    - Must be 3-30 characters long.
+    - Can only contain alphanumeric characters, underscores, or hyphens.
+    """
+    if not re.match(r"^[a-zA-Z][a-zA-Z0-9_-]{2,29}$", value):
+        raise ValueError(
+            "Nickname must start with a letter, be 3-30 characters long, and contain only alphanumeric characters, underscores, or hyphens."
+        )
+    return value
 
 class UserBase(BaseModel):
     email: EmailStr = Field(..., example="john.doe@example.com")
@@ -33,6 +45,13 @@ class UserBase(BaseModel):
     github_profile_url: Optional[str] = Field(None, example="https://github.com/johndoe")
 
     _validate_urls = validator('profile_picture_url', 'linkedin_profile_url', 'github_profile_url', pre=True, allow_reuse=True)(validate_url)
+    
+    @validator("nickname", pre=True, always=True)
+    def validate_nickname_field(cls, value):
+        if value:
+            return validate_nickname(value)
+        return value
+ 
     class Config:
         from_attributes = True
 
@@ -55,7 +74,13 @@ class UserUpdate(UserBase):
         if not any(values.values()):
             raise ValueError("At least one field must be provided for update")
         return values
-
+    
+    @validator("nickname", pre=True, always=True)
+    def validate_nickname_field(cls, value):
+        if value:
+            return validate_nickname(value)
+        return value
+    
 class UserResponse(UserBase):
     id: uuid.UUID = Field(..., example=uuid.uuid4())
     role: UserRole = Field(default=UserRole.AUTHENTICATED, example="AUTHENTICATED")
@@ -63,7 +88,12 @@ class UserResponse(UserBase):
     nickname: Optional[str] = Field(None, min_length=3, pattern=r'^[\w-]+$', example=generate_nickname())    
     role: UserRole = Field(default=UserRole.AUTHENTICATED, example="AUTHENTICATED")
     is_professional: Optional[bool] = Field(default=False, example=True)
-
+     
+    @validator("nickname", pre=True, always=True)
+    def validate_nickname_field(cls, value):
+        if value:
+            return validate_nickname(value)
+        return value
 class LoginRequest(BaseModel):
     email: str = Field(..., example="john.doe@example.com")
     password: str = Field(..., example="Secure*1234")
