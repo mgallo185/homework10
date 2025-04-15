@@ -3,6 +3,7 @@ import pytest
 from pydantic import ValidationError
 from datetime import datetime
 from app.schemas.user_schemas import UserBase, UserCreate, UserUpdate, UserResponse, UserListResponse, LoginRequest
+from uuid import UUID
 
 # Tests for UserBase
 def test_user_base_valid(user_base_data):
@@ -26,7 +27,7 @@ def test_user_update_valid(user_update_data):
 def test_user_response_valid(user_response_data):
     user = UserResponse(**user_response_data)
     assert user.id == user_response_data["id"]
-    # assert user.last_login_at == user_response_data["last_login_at"]
+    #assert user.last_login_at == user_response_data["last_login_at"]
 
 # Tests for LoginRequest
 def test_login_request_valid(login_request_data):
@@ -67,3 +68,42 @@ def test_user_base_invalid_email(user_base_data_invalid):
     
     assert "value is not a valid email address" in str(exc_info.value)
     assert "john.doe.example.com" in str(exc_info.value)
+@pytest.fixture
+def user_base_data():
+    return {
+        "nickname": "test_user",
+        "email": "test_user@example.com",
+        "profile_picture_url": "http://example.com/profile.jpg",
+    }
+
+@pytest.fixture
+def user_create_data():
+    return {
+        "nickname": "new_user",
+        "email": "new_user@example.com",
+        "password": "securepassword",
+    }
+
+@pytest.fixture
+def user_update_data():
+    return {
+        "email": "updated_user@example.com",
+        "first_name": "UpdatedName",
+    }
+1
+@pytest.fixture
+def user_response_data():
+    return {
+        "id": UUID('550e8400-e29b-41d4-a716-446655440000'),
+        "nickname": "test_user",
+        "email": "test_user@example.com",
+        "profile_picture_url": "http://example.com/profile.jpg",
+        "last_login_at": "2024-12-02T10:00:00Z",
+    }
+
+@pytest.fixture
+def login_request_data():
+    return {
+        "email": "test_user@example.com",
+        "password": "securepassword",
+    }
