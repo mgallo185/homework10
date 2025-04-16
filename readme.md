@@ -7,14 +7,17 @@ https://hub.docker.com/repository/docker/mgallo185/homework10/general
 
 
 
-### Issue 1
+### Issue 1: Nickname Mismatch
 https://github.com/mgallo185/homework10/issues/1
+There was a mismatch with nicknames when a user gets regsitered where the nickname gets changed to a different value. The issue was that nickname was being randomized and I removed this randomization and kept it to a fixed value.
 ### Issue 2
 https://github.com/mgallo185/homework10/issues/2
-### Issue 3
+### Issue 3: Password Complexity
 https://github.com/mgallo185/homework10/issues/3
-### Issue 4
+Fixed passwords that did not have proper security. Made Passwords require a certain number of characters, number, uppercase character,
+### Issue 4 SMTP Email 
 https://github.com/mgallo185/homework10/issues/4
+During testing with my local image, I kept getting an error about SMTP setup. This required creating a MailTrap account and using the credentials in the code and in .env and secrets.
 ### Issue 5
 https://github.com/mgallo185/homework10/issues/5
 ### Issue 6
