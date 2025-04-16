@@ -5,7 +5,17 @@
 https://hub.docker.com/repository/docker/mgallo185/homework10/general
 
 
-Welcome to the Event Manager Company! As a newly hired Software QA Analyst/Developer and a student in software engineering, you are embarking on an exciting journey to contribute to our project aimed at developing a secure, robust REST API that supports JWT token-based OAuth2 authentication. This API serves as the backbone of our user management system and will eventually expand to include features for event management and registration.
+
+https://github.com/mgallo185/homework10/issues/1
+https://github.com/mgallo185/homework10/issues/2
+https://github.com/mgallo185/homework10/issues/3
+https://github.com/mgallo185/homework10/issues/4
+https://github.com/mgallo185/homework10/issues/5
+https://github.com/mgallo185/homework10/issues/6
+
+
+
+
 
 ## Assignment Objectives
 
