@@ -10,18 +10,24 @@ https://hub.docker.com/repository/docker/mgallo185/homework10/general
 ### Issue 1: Nickname Mismatch
 https://github.com/mgallo185/homework10/issues/1
 There was a mismatch with nicknames when a user gets regsitered where the nickname gets changed to a different value. The issue was that nickname was being randomized and I removed this randomization and kept it to a fixed value.
-### Issue 2
+### Issue 2 Login Validation 
 https://github.com/mgallo185/homework10/issues/2
+Fixed issue for login validation with the correct HTTP Response Code
 ### Issue 3: Password Complexity
 https://github.com/mgallo185/homework10/issues/3
 Fixed passwords that did not have proper security. Made Passwords require a certain number of characters, number, uppercase character,
 ### Issue 4 SMTP Email 
 https://github.com/mgallo185/homework10/issues/4
 During testing with my local image, I kept getting an error about SMTP setup. This required creating a MailTrap account and using the credentials in the code and in .env and secrets.
-### Issue 5
+### Issue 5 Profile URL Links
 https://github.com/mgallo185/homework10/issues/5
-### Issue 6
+o check for both legitimate and invalid URL submissions, corresponding unit tests were included.
+Used strict URL validation for user profile fields such as profile_picture_url.
+
+Now, when the system detects invalid URLs, it returns unambiguous error messages and compares them to standard validation rules.
+### Issue 6 Token
 https://github.com/mgallo185/homework10/issues/6
+Fixed Token Errors
 
 
 
