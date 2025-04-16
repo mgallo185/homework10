@@ -189,3 +189,11 @@ async def test_list_users_unauthorized(async_client, user_token):
         headers={"Authorization": f"Bearer {user_token}"}
     )
     assert response.status_code == 403  # Forbidden, as expected for regular user
+
+
+@pytest.mark.asyncio
+async def test_verify_email_invalid_token(async_client, unverified_user):
+    token = "invalid_token"
+    response = await async_client.get(f"/verify-email/{unverified_user.id}/{token}")
+    assert response.status_code == 400
+    assert "Invalid or expired verification token" in response.json()["detail"]

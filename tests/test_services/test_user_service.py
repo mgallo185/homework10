@@ -158,3 +158,118 @@ async def test_unlock_user_account(db_session, locked_user):
     assert unlocked, "The account should be unlocked"
     refreshed_user = await UserService.get_by_id(db_session, locked_user.id)
     assert not refreshed_user.is_locked, "The user should no longer be locked"
+
+# Test creating a user with an email that already exists
+async def test_create_user_with_existing_email(db_session, email_service, user):
+    user_data = {
+        "email": user.email,  # Using existing email
+        "password": "ValidPassword123!",
+        "nickname": "unique_nickname"
+    }
+    new_user = await UserService.create(db_session, user_data, email_service)
+    assert new_user is None, "Should not create user with existing email"
+
+# Test creating a user with a nickname that already exists
+async def test_create_user_with_existing_nickname(db_session, email_service, user):
+    user_data = {
+        "email": "new_user@example.com",
+        "password": "ValidPassword123!",
+        "nickname": user.nickname  # Using existing nickname
+    }
+    new_user = await UserService.create(db_session, user_data, email_service)
+    assert new_user is None, "Should not create user with existing nickname"
+
+
+
+# Test login with unverified email
+async def test_login_with_unverified_email(db_session, user):
+    # Ensure user is unverified
+    user.email_verified = False
+    await db_session.commit()
+    
+    result = await UserService.login_user(db_session, user.email, "MySuperPassword$1234")
+    assert result is None, "Unverified users should not be able to log in"
+
+# Test login with locked account
+async def test_login_with_locked_account(db_session, user):
+    # Lock the user account
+    user.is_locked = True
+    await db_session.commit()
+    
+    result = await UserService.login_user(db_session, user.email, "MySuperPassword$1234")
+    assert result is None, "Locked users should not be able to log in"
+
+# Test user count method
+async def test_user_count(db_session, users_with_same_role_50_users):
+    count = await UserService.count(db_session)
+    assert count == 50, "User count should match the number of users in the database"
+
+# Test reset password for non-existent user
+async def test_reset_password_nonexistent_user(db_session):
+    non_existent_user_id = "non-existent-id"
+    result = await UserService.reset_password(db_session, non_existent_user_id, "NewPassword123!")
+    assert result is False, "Should not reset password for non-existent user"
+
+# Test verifying email with invalid token
+async def test_verify_email_with_invalid_token(db_session, user):
+    # Set the real token
+    user.verification_token = "real_token"
+    await db_session.commit()
+    
+    # Try to verify with wrong token
+    result = await UserService.verify_email_with_token(db_session, user.id, "wrong_token")
+    assert result is False, "Should not verify email with invalid token"
+
+# Test unlocking a user's account that is not locked
+async def test_unlock_already_unlocked_account(db_session, user):
+    # Ensure user is unlocked
+    user.is_locked = False
+    await db_session.commit()
+    
+    result = await UserService.unlock_user_account(db_session, user.id)
+    assert result is False, "Should return False when trying to unlock an already unlocked account"
+
+# Test login tracks last_login_at
+async def test_login_updates_last_login_timestamp(db_session, verified_user):
+    # Log in the user
+    logged_in_user = await UserService.login_user(
+        db_session, 
+        verified_user.email, 
+        "MySuperPassword$1234"
+    )
+    
+    assert logged_in_user is not None
+    assert logged_in_user.last_login_at is not None, "Login should set last_login_at timestamp"
+    
+    # If you need to test that it updates on subsequent logins:
+    original_timestamp = logged_in_user.last_login_at
+    
+    # Wait a moment to ensure timestamp changes
+    import asyncio
+    await asyncio.sleep(0.1)
+    
+    # Log in again
+    logged_in_again = await UserService.login_user(
+        db_session, 
+        verified_user.email, 
+        "MySuperPassword$1234"
+    )
+    
+    assert logged_in_again is not None
+    assert logged_in_again.last_login_at > original_timestamp, "Subsequent login should update last_login_at timestamp"
+
+# Test login resets failed_login_attempts counter
+async def test_successful_login_resets_failed_attempts(db_session, verified_user):
+    # Set some failed attempts
+    verified_user.failed_login_attempts = 2
+    await db_session.commit()
+    
+    # Log in successfully
+    logged_in_user = await UserService.login_user(
+        db_session, 
+        verified_user.email, 
+        "MySuperPassword$1234"
+    )
+    
+    assert logged_in_user is not None
+    assert logged_in_user.failed_login_attempts == 0, "Successful login should reset failed attempts"
