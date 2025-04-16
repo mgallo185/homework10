@@ -1,4 +1,5 @@
 from builtins import ValueError, any, bool, str
+from urllib.parse import urlparse
 from pydantic import BaseModel, EmailStr, Field, validator, root_validator
 from typing import Optional, List
 from datetime import datetime
@@ -28,7 +29,7 @@ class UserBase(BaseModel):
     first_name: Optional[str] = Field(None, example="John")
     last_name: Optional[str] = Field(None, example="Doe")
     bio: Optional[str] = Field(None, example="Experienced software developer specializing in web applications.")
-    profile_picture_url: Optional[str] = Field(None, example="https://example.com/profiles/john.jpg")
+    profile_picture_url: Optional[str] = Field(None, description="The user's profile picture link. Should have a valid image file (e.g., .jpg, .jpeg, .png).", example="https://example.com/profiles/john.jpg")
     linkedin_profile_url: Optional[str] =Field(None, example="https://linkedin.com/in/johndoe")
     github_profile_url: Optional[str] = Field(None, example="https://github.com/johndoe")
 
