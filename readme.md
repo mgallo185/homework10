@@ -3,15 +3,24 @@
 
 ## Docker Link
 https://hub.docker.com/repository/docker/mgallo185/homework10/general
+<img width="959" alt="image" src="https://github.com/user-attachments/assets/f00e7e45-1192-42ff-9338-b49c2668b360" />
 
 
 
+### Issue 1
 https://github.com/mgallo185/homework10/issues/1
+### Issue 2
 https://github.com/mgallo185/homework10/issues/2
+### Issue 3
 https://github.com/mgallo185/homework10/issues/3
+### Issue 4
 https://github.com/mgallo185/homework10/issues/4
+### Issue 5
 https://github.com/mgallo185/homework10/issues/5
+### Issue 6
 https://github.com/mgallo185/homework10/issues/6
+
+
 
 ## Reflection
 
