@@ -13,7 +13,9 @@ https://github.com/mgallo185/homework10/issues/4
 https://github.com/mgallo185/homework10/issues/5
 https://github.com/mgallo185/homework10/issues/6
 
+## Reflection
 
+This was a very tough assignment where there was a lot of information to process and analyze from. The first issue I noticed was the nickname was getting changed at each instance and there was a small change I needed to do where I had to remove the randomized nickname feature that was present. There were also token fixtures missing and also authentication features missing with a user's password or their profile picture naming.  This assignment really taught me that debugging and using an API can be quite tough and very time consuming. So much time is spent on debugging a specific line of code. This gave me a greater understanding of how things can be in the workforce and I can use this in application.
 
 
 
